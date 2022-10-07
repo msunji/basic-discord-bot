@@ -13,19 +13,24 @@ module.exports = {
 		),
 	async execute(interaction) {
 		const channelName = interaction.options.getString('channel-name');
-
+    // guildName is basically the server
 		const guildName = await interaction.client.guilds.fetch(process.env.GUILD_ID);
 		const everyoneRole = guildName.roles.everyone;
-		await interaction.guild.channels.create({
-			name: channelName,
-			parent: process.env.CHANNEL_ID,
-			type: ChannelType.GuildText,
-			permissionOverwrites: [
-				{
-					id: everyoneRole,
-					deny: [PermissionsBitField.Flags.ViewChannel],
-				},
-			],
-		});
+    try {
+      await interaction.guild.channels.create({
+        name: channelName,
+        parent: process.env.CHANNEL_ID,
+        type: ChannelType.GuildText,
+        permissionOverwrites: [
+          {
+            id: everyoneRole,
+            deny: [PermissionsBitField.Flags.ViewChannel],
+          },
+        ],
+      });
+      await interaction.reply({ content: `Successfully created new channel called ${channelName} 🎉` });
+    } catch (error) {
+      console.error(error);
+    }
 	},
 };
