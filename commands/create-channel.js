@@ -1,16 +1,19 @@
 // this command creates a private channel
 require('dotenv').config();
-const { SlashCommandBuilder, ChannelType, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, PermissionsBitField, EmbedBuilder } = require('discord.js');
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('create-channel')
 		.setDescription('Creates a new private text channel.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.addStringOption(option =>
 			option.setName('channel-name')
 				.setDescription('The name of the channel you want to create')
 				.setRequired(true),
 		),
+
 	async execute(interaction) {
 		const channelName = interaction.options.getString('channel-name');
     // guildName is basically the server
@@ -29,6 +32,7 @@ module.exports = {
         ],
       });
       await interaction.reply({ content: `Successfully created new channel called ${channelName} 🎉` });
+      console.log(interaction.guild.channels);
     } catch (error) {
       console.error(error);
     }
